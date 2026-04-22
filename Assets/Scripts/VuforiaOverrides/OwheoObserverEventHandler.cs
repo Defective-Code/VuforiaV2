@@ -47,7 +47,7 @@ public class OwheoObserverEventHandler : DefaultObserverEventHandler
         } else if(om.currentTargetName != mObserverBehaviour.TargetName)
         {
             Debug.Log("Target has changed");
-            Disable();
+            DisableNotAfterTimer();
         }
 
         ToggleUIElements(false);
@@ -75,7 +75,7 @@ public class OwheoObserverEventHandler : DefaultObserverEventHandler
         else
         {
             firstLoad = false;
-            Disable();
+            DisableNotAfterTimer();
         }
     }
 
@@ -101,7 +101,7 @@ public class OwheoObserverEventHandler : DefaultObserverEventHandler
         ResetCoroutine(); // once the timer has completed we want to reset everything
     }
 
-    void Disable()
+    void DisableNotAfterTimer()
     {
         ToggleUIElements(false);
 
