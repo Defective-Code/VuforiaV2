@@ -477,6 +477,11 @@ MonoBehaviour:
   OnTargetLost:
     m_PersistentCalls:
       m_Calls: []
+  disableTimer: 10
+  trackingStatus: {fileID: 0}
+  countdownPanel: {fileID: 0}
+  countdownBar: {fileID: 0}
+  om: {fileID: 0}
 --- !u!114 &209677043
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1623,66 +1628,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d813439348d134742a1e96caa7216e78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PrefabSettings
---- !u!1001 &551367117
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: a96d359d77770eb49a5a6261083ef66c, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 5.963027
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a96d359d77770eb49a5a6261083ef66c, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.000000009374958
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a96d359d77770eb49a5a6261083ef66c, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -5.8662357
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a96d359d77770eb49a5a6261083ef66c, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a96d359d77770eb49a5a6261083ef66c, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a96d359d77770eb49a5a6261083ef66c, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a96d359d77770eb49a5a6261083ef66c, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a96d359d77770eb49a5a6261083ef66c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a96d359d77770eb49a5a6261083ef66c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a96d359d77770eb49a5a6261083ef66c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: a96d359d77770eb49a5a6261083ef66c, type: 3}
-      propertyPath: m_Name
-      value: pointerV1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: -8700617353114198275, guid: a96d359d77770eb49a5a6261083ef66c, type: 3}
-    - {fileID: -5117700066308340382, guid: a96d359d77770eb49a5a6261083ef66c, type: 3}
-    - {fileID: 65702495048144492, guid: a96d359d77770eb49a5a6261083ef66c, type: 3}
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: a96d359d77770eb49a5a6261083ef66c, type: 3}
 --- !u!1 &558663857
 GameObject:
   m_ObjectHideFlags: 0
@@ -2177,6 +2122,11 @@ MonoBehaviour:
   OnTargetLost:
     m_PersistentCalls:
       m_Calls: []
+  disableTimer: 10
+  trackingStatus: {fileID: 0}
+  countdownPanel: {fileID: 0}
+  countdownBar: {fileID: 0}
+  om: {fileID: 0}
 --- !u!1 &802010594
 GameObject:
   m_ObjectHideFlags: 0
@@ -3064,6 +3014,11 @@ MonoBehaviour:
   OnTargetLost:
     m_PersistentCalls:
       m_Calls: []
+  disableTimer: 10
+  trackingStatus: {fileID: 0}
+  countdownPanel: {fileID: 0}
+  countdownBar: {fileID: 0}
+  om: {fileID: 0}
 --- !u!1 &985977585
 GameObject:
   m_ObjectHideFlags: 0
@@ -4769,4 +4724,3 @@ SceneRoots:
   - {fileID: 1422941030}
   - {fileID: 366623269}
   - {fileID: 406624693}
-  - {fileID: 551367117}

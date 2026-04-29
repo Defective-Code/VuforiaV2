@@ -1582,7 +1582,7 @@ MonoBehaviour:
   mImageTargetType: 3
   mWidth: 0.15
   mHeight: 0.2
-  mRuntimeTexture: {fileID: 2800000, guid: ca142f92109773f4ebb1db215d6be993, type: 3}
+  mRuntimeTexture: {fileID: 0}
   mMotionHint: 1
   mTrackingOptimization: 0
   mTrackingOptimizationNeedsUpgrade: 0
@@ -3656,27 +3656,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3840727046746836148, guid: 6ac9c60dbdac1744c97aef1ff2f6df99, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.41182247
+      value: 0.1693099
       objectReference: {fileID: 0}
     - target: {fileID: 3840727046746836148, guid: 6ac9c60dbdac1744c97aef1ff2f6df99, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.41182247
+      value: 0.1693099
       objectReference: {fileID: 0}
     - target: {fileID: 3840727046746836148, guid: 6ac9c60dbdac1744c97aef1ff2f6df99, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.41182247
+      value: 0.1693099
       objectReference: {fileID: 0}
     - target: {fileID: 3840727046746836148, guid: 6ac9c60dbdac1744c97aef1ff2f6df99, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.549
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3840727046746836148, guid: 6ac9c60dbdac1744c97aef1ff2f6df99, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.307
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 3840727046746836148, guid: 6ac9c60dbdac1744c97aef1ff2f6df99, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.222
+      value: 0.126
       objectReference: {fileID: 0}
     - target: {fileID: 3840727046746836148, guid: 6ac9c60dbdac1744c97aef1ff2f6df99, type: 3}
       propertyPath: m_LocalRotation.w
@@ -4714,15 +4714,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5356819237424380424, guid: 703c2d020721d84418302a732c0f9725, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.04068195
+      value: 0.026011225
       objectReference: {fileID: 0}
     - target: {fileID: 5356819237424380424, guid: 703c2d020721d84418302a732c0f9725, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.04068195
+      value: 0.026011225
       objectReference: {fileID: 0}
     - target: {fileID: 5356819237424380424, guid: 703c2d020721d84418302a732c0f9725, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.04068195
+      value: 0.026011225
       objectReference: {fileID: 0}
     - target: {fileID: 5356819237424380424, guid: 703c2d020721d84418302a732c0f9725, type: 3}
       propertyPath: m_LocalPosition.x

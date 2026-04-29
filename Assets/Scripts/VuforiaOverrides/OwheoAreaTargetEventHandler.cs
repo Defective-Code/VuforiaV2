@@ -13,6 +13,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// A custom handler that inherits from the DefaultObserverEventHandler class.
@@ -37,6 +38,24 @@ public class OwheoAreaTargetEventHandler : DefaultAreaTargetEventHandler
     public ObserverManager om;
 
     private bool firstLoad = true;
+
+    private bool isSceneChanging = false;
+
+    // Checks to see if the scene is being changed so none of the observer logic attempts to fire after switching the scene
+    void OnEnable()
+    {
+        SceneManager.activeSceneChanged += OnSceneChanged;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.activeSceneChanged -= OnSceneChanged;
+    }
+
+    void OnSceneChanged(Scene oldScene, Scene newScene)
+    {
+        isSceneChanging = true;
+    }
 
     protected override void OnTrackingFound()
     {
@@ -63,6 +82,9 @@ public class OwheoAreaTargetEventHandler : DefaultAreaTargetEventHandler
     // When tracking is lost depends on what you have set the status filter as in the Editor.  TRACKING, TRACKING_EXTENDED Tracked etc
     protected override void OnTrackingLost()
     {
+
+        if (isSceneChanging) return; // check if the scene is being changed and stop the execution of any of this
+
         if (!firstLoad)
         {
             //SetAugmentationRendering(true);
@@ -165,4 +187,6 @@ public class OwheoAreaTargetEventHandler : DefaultAreaTargetEventHandler
         foreach (var component in augmentationRendererComponents)
             component.SetActive(value);
     }
+
+    
 }

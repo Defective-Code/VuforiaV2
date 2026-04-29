@@ -17,9 +17,15 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/OutdoorScene.unity
     guid: e4ac52fb8ea77374183b00983f27b2df
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Demo.unity
     guid: a59fdabda311d85418e77f38013ac366
+  - enabled: 1
+    path: Assets/Scenes/DemoOutside.unity
+    guid: 492244777f1b6c14791817a8f632c162
+  - enabled: 1
+    path: Assets/Scenes/DemoInside.unity
+    guid: 642caead333a53f4f898c20eb91ee690
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

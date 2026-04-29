@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LandscapeParallax : MonoBehaviour
 {
@@ -63,9 +64,22 @@ public class LandscapeParallax : MonoBehaviour
 
     }
 
-    void OnDestroy()
+    //void OnDestroy()
+    //{
+
+    //    if (cameraObject != null) // check to make sure the object still exists before resetting its possition
+    //    {
+    //        landscapeCamera.transform.localPosition = new Vector3(0, 0, 0); // reset the cameras position everytime it is destroyed so the position of the camera is consitent
+    //    }
+    //    //landscapeCamera.transform.position = cameraAnchor.transform.position;
+
+    //}
+
+    void OnDisable()
     {
-        //landscapeCamera.transform.position = cameraAnchor.transform.position;
-        landscapeCamera.transform.localPosition = new Vector3(0, 0, 0); // reset the cameras position everytime it is destroyed so the position of the camera is consitent
+        if (landscapeCamera != null) // check to make sure the object still exists before resetting its possition
+        {
+            landscapeCamera.transform.localPosition = new Vector3(0, 0, 0); // reset the cameras position everytime it is destroyed so the position of the camera is consitent
+        }
     }
 }

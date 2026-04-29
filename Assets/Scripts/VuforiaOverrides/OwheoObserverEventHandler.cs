@@ -12,6 +12,7 @@ using UnityEngine;
 using Vuforia;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// A custom handler that implements the ITrackableEventHandler interface.
@@ -38,13 +39,32 @@ public class OwheoObserverEventHandler : DefaultObserverEventHandler
 
     private bool firstLoad = true; // variable to check if this is the first time the targets are loaded, because Vuforia falsely "tracks" them on initialization, meaning the tracking lost code executes. 
 
+    private bool isSceneChanging = false; // boolean to check the state of scene switching, resets to false everytime a scene is loaded, then is set to true once the scene is switched
+
+    // Checks to see if the scene is being changed so none of the observer logic attempts to fire after switching the scene
+    void OnEnable()
+    {
+        SceneManager.activeSceneChanged += OnSceneChanged;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.activeSceneChanged -= OnSceneChanged;
+    }
+
+    void OnSceneChanged(Scene oldScene, Scene newScene)
+    {
+        isSceneChanging = true;
+    }
+
     protected override void OnTrackingFound()
     {
 
         if (countingDown && om.currentTargetName == mObserverBehaviour.TargetName)
         {
             ResetCoroutine();// stop a currently running countdown if we reestablish tracking
-        } else if(om.currentTargetName != mObserverBehaviour.TargetName)
+        } 
+        else if(om.currentTargetName != mObserverBehaviour.TargetName)
         {
             Debug.Log("Target has changed");
             DisableNotAfterTimer();
@@ -59,6 +79,9 @@ public class OwheoObserverEventHandler : DefaultObserverEventHandler
     // When tracking is lost depends on what you have set the status filter as in the Editor.  TRACKING, TRACKING_EXTENDED Tracked etc
     protected override void OnTrackingLost()
     {
+
+        if (isSceneChanging) return; // check if the scene is being changed and stop the execution of any of this
+
         if (firstLoad)
         {
             Debug.Log("Tracking was lost, setting true!");
