@@ -42,20 +42,21 @@ public class OwheoObserverEventHandler : DefaultObserverEventHandler
     private bool isSceneChanging = false; // boolean to check the state of scene switching, resets to false everytime a scene is loaded, then is set to true once the scene is switched
 
     // Checks to see if the scene is being changed so none of the observer logic attempts to fire after switching the scene
-    void OnEnable()
-    {
-        SceneManager.activeSceneChanged += OnSceneChanged;
-    }
+    //void OnEnable()
+    //{
+    //    SceneManager.activeSceneChanged += OnSceneChanged;
+    //}
 
-    void OnDisable()
-    {
-        SceneManager.activeSceneChanged -= OnSceneChanged;
-    }
+    //void OnDisable()
+    //{
+    //    SceneManager.activeSceneChanged -= OnSceneChanged;
+    //}
 
-    void OnSceneChanged(Scene oldScene, Scene newScene)
-    {
-        isSceneChanging = true;
-    }
+    //void OnSceneChanged(Scene oldScene, Scene newScene)
+    //{
+    //    if (firstLoad) return; // here im checking if this is the first time the scene is being loaded, as such we 
+    //    isSceneChanging = true;
+    //}
 
     protected override void OnTrackingFound()
     {
@@ -66,7 +67,7 @@ public class OwheoObserverEventHandler : DefaultObserverEventHandler
         } 
         else if(om.currentTargetName != mObserverBehaviour.TargetName)
         {
-            Debug.Log("Target has changed");
+            Debug.Log($"Target has changed to {mObserverBehaviour.TargetName}");
             DisableNotAfterTimer();
         }
 
@@ -80,10 +81,12 @@ public class OwheoObserverEventHandler : DefaultObserverEventHandler
     protected override void OnTrackingLost()
     {
 
-        if (isSceneChanging) return; // check if the scene is being changed and stop the execution of any of this
+        //Debug.Log($"isSceneChanging : {isSceneChanging}");
+        //if (isSceneChanging) return; // check if the scene is being changed and stop the execution of any of this
 
-        if (firstLoad)
+        if (!firstLoad)
         {
+            
             Debug.Log("Tracking was lost, setting true!");
 
             ToggleUIElements(true);
