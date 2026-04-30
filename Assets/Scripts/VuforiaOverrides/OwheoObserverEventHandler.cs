@@ -23,23 +23,22 @@ using UnityEngine.SceneManagement;
 public class OwheoObserverEventHandler : DefaultObserverEventHandler
 {
 
-    public float disableTimer = 10f;
+    //public float disableTimer = 10f;
 
-    bool countingDown = false; // tracks whether we are currently counting down the tracking
-    Coroutine countdown;
+    //bool countingDown = false; // tracks whether we are currently counting down the tracking
+    //Coroutine countdown;
 
-    public TMP_Text trackingStatus; // text label to inform user if tracking has been lost
+    //private float timerCount = 0f;
 
-    private float timerCount = 0f;
+    //public GameObject trackingPanel;
+    //Slider trackingBar;
+    //TMP_Text trackingStatus; // text label to inform user if tracking has been lost
 
-    public GameObject countdownPanel;
-    public Slider countdownBar;
+    //public ObserverManager om;
 
-    public ObserverManager om;
+    //private bool firstLoad = true; // variable to check if this is the first time the targets are loaded, because Vuforia falsely "tracks" them on initialization, meaning the tracking lost code executes. 
 
-    private bool firstLoad = true; // variable to check if this is the first time the targets are loaded, because Vuforia falsely "tracks" them on initialization, meaning the tracking lost code executes. 
-
-    private bool isSceneChanging = false; // boolean to check the state of scene switching, resets to false everytime a scene is loaded, then is set to true once the scene is switched
+    //private bool isSceneChanging = false; // boolean to check the state of scene switching, resets to false everytime a scene is loaded, then is set to true once the scene is switched
 
     // Checks to see if the scene is being changed so none of the observer logic attempts to fire after switching the scene
     //void OnEnable()
@@ -58,23 +57,35 @@ public class OwheoObserverEventHandler : DefaultObserverEventHandler
     //    isSceneChanging = true;
     //}
 
+    //void Start()
+    //{
+    //    trackingBar = trackingPanel.transform.GetChild(0);
+    //    trackingStatus = trackingPanel.transform.GetChild(1);
+    //}
+
     protected override void OnTrackingFound()
     {
 
-        if (countingDown && om.currentTargetName == mObserverBehaviour.TargetName)
-        {
-            ResetCoroutine();// stop a currently running countdown if we reestablish tracking
-        } 
-        else if(om.currentTargetName != mObserverBehaviour.TargetName)
-        {
-            Debug.Log($"Target has changed to {mObserverBehaviour.TargetName}");
-            DisableNotAfterTimer();
-        }
+        //if (countingDown && ObserverManager.instance.currentTargetName == mObserverBehaviour.TargetName)
+        //{
+        //    ResetCoroutine();// stop a currently running countdown if we reestablish tracking
+        //} 
+        //else if(ObserverManager.instance.currentTargetName != mObserverBehaviour.TargetName)
+        //{
+        //    Debug.Log($"Target has changed to {mObserverBehaviour.TargetName}");
+        //    DisableNotAfterTimer();
+        //}
 
-        ToggleUIElements(false);
+        //ToggleUIElements(false);
 
-        if (mObserverBehaviour) SetComponentsEnabled(true);
-        OnTargetFound?.Invoke();
+        ObserverManager.instance.Found(mObserverBehaviour.TargetName, () =>
+        {
+            if (mObserverBehaviour) SetComponentsEnabled(true); // set the child components to false if the tracking is lost for more than whatever disableTimer is
+            OnTargetFound?.Invoke();
+        });
+
+        //SetAugmentationRendering(true);
+        //OnTargetFound?.Invoke();
     }
 
     // When tracking is lost depends on what you have set the status filter as in the Editor.  TRACKING, TRACKING_EXTENDED Tracked etc
@@ -84,74 +95,36 @@ public class OwheoObserverEventHandler : DefaultObserverEventHandler
         //Debug.Log($"isSceneChanging : {isSceneChanging}");
         //if (isSceneChanging) return; // check if the scene is being changed and stop the execution of any of this
 
-        if (!firstLoad)
+        //if (!firstLoad)
+        //{
+
+        //    Debug.Log("Tracking was lost, setting true!");
+
+        //    ToggleUIElements(true);
+
+        //    trackingStatus.text = "Tracking was lost, please scan the device around to reestablish tracking";
+
+        //    countingDown = true;
+        //    countdown = StartCoroutine(DisableAfterTimer());
+
+        //    //if (mObserverBehaviour.Status == TargetStatus. )
+        //}
+        //else
+        //{
+        //    firstLoad = false;
+        //    DisableNotAfterTimer();
+        //}
+
+        ObserverManager.instance.Lost(mObserverBehaviour.TargetName, () =>
         {
-            
-            Debug.Log("Tracking was lost, setting true!");
+            if (mObserverBehaviour) SetComponentsEnabled(false); // set the child components to false if the tracking is lost for more than whatever disableTimer is
+            OnTargetLost?.Invoke();
+        });
 
-            ToggleUIElements(true);
 
-            trackingStatus.text = "Tracking was lost, please scan the device around to reestablish tracking";
-
-            countingDown = true;
-            countdown = StartCoroutine(DisableAfterTimer());
-
-            //if (mObserverBehaviour.Status == TargetStatus. )
-        }
-        else
-        {
-            firstLoad = false;
-            DisableNotAfterTimer();
-        }
     }
 
-    IEnumerator DisableAfterTimer()
-    {
-        while (timerCount < disableTimer)
-        {
-            timerCount += Time.deltaTime;
-            //trackingStatus.text = $"Tracking was lost, please scan the device around to reestablish tracking : {disableTimer - timerCount}";
-            countdownBar.value = Mathf.Clamp01((disableTimer - timerCount) * (1f / disableTimer));
-            yield return null;
-        }
 
-        Debug.Log("Timer Complete, Setting False!");
-        ToggleUIElements(false);
-
-        //timerCount = 0f;
-
-        if (mObserverBehaviour)
-            SetComponentsEnabled(false); // set the child components to false if the tracking is lost for more than whatever disableTimer is
-        OnTargetLost?.Invoke();
-
-        ResetCoroutine(); // once the timer has completed we want to reset everything
-    }
-
-    void DisableNotAfterTimer()
-    {
-        ToggleUIElements(false);
-
-        if (mObserverBehaviour)
-            SetComponentsEnabled(false); // set the child components to false if the tracking is lost for more than whatever disableTimer is
-        OnTargetLost?.Invoke();
-
-        ResetCoroutine();
-    }
-
-    // reset all the coroutine stuff
-    void ResetCoroutine()
-    {
-        if (countingDown) StopCoroutine(countdown);
-        countingDown = false;
-        countdown = null;
-        timerCount = 0f;
-    }
-
-    void ToggleUIElements(bool toggle)
-    {
-        trackingStatus.gameObject.SetActive(toggle);
-        countdownPanel.SetActive(toggle);
-    }
 
     public void SetComponentsEnabled(bool enable)
     {
@@ -175,5 +148,55 @@ public class OwheoObserverEventHandler : DefaultObserverEventHandler
             }
         }
     }
+
+    //IEnumerator DisableAfterTimer()
+    //{
+    //    while (timerCount < disableTimer)
+    //    {
+    //        timerCount += Time.deltaTime;
+    //        //trackingStatus.text = $"Tracking was lost, please scan the device around to reestablish tracking : {disableTimer - timerCount}";
+    //        countdownBar.value = Mathf.Clamp01((disableTimer - timerCount) * (1f / disableTimer));
+    //        yield return null;
+    //    }
+
+    //    Debug.Log("Timer Complete, Setting False!");
+    //    ToggleUIElements(false);
+
+    //    //timerCount = 0f;
+
+    //    if (mObserverBehaviour)
+    //        SetComponentsEnabled(false); // set the child components to false if the tracking is lost for more than whatever disableTimer is
+    //    OnTargetLost?.Invoke();
+
+    //    ResetCoroutine(); // once the timer has completed we want to reset everything
+    //}
+
+    //void DisableNotAfterTimer()
+    //{
+    //    ToggleUIElements(false);
+
+    //    if (mObserverBehaviour)
+    //        SetComponentsEnabled(false); // set the child components to false if the tracking is lost for more than whatever disableTimer is
+    //    OnTargetLost?.Invoke();
+
+    //    ResetCoroutine();
+    //}
+
+    //// reset all the coroutine stuff
+    //void ResetCoroutine()
+    //{
+    //    if (countingDown) StopCoroutine(countdown);
+    //    countingDown = false;
+    //    countdown = null;
+    //    timerCount = 0f;
+    //}
+
+    //void ToggleUIElements(bool toggle)
+    //{
+    //    trackingStatus.gameObject.SetActive(toggle);
+    //    countdownPanel.SetActive(toggle);
+    //}
+
+
 
 }
