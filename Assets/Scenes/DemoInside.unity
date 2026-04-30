@@ -414,6 +414,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9102968756029910207, guid: 4d02d0b131c0578499b2fd8b03377b75, type: 3}
+      propertyPath: Loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9102968756029910207, guid: 4d02d0b131c0578499b2fd8b03377b75, type: 3}
       propertyPath: MaxDistance
       value: 1
       objectReference: {fileID: 0}
@@ -5841,6 +5845,7 @@ MonoBehaviour:
   trackingPanel: {fileID: 350558106}
   trackingBar: {fileID: 1852273962}
   trackingStatus: {fileID: 372895093}
+  isSceneChanging: 0
 --- !u!1 &1824788806
 GameObject:
   m_ObjectHideFlags: 0

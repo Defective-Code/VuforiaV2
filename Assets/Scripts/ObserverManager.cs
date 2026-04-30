@@ -30,7 +30,7 @@ public class ObserverManager : MonoBehaviour
 
     //public event Action OnTimerFinished;
 
-    //private bool isSceneChanging = false;
+    public bool isSceneChanging = false; // check for if the scene is changing between outside and inside
 
     private void Awake()
     {
@@ -76,7 +76,9 @@ public class ObserverManager : MonoBehaviour
 
     public void Lost(string targetName, Action onComplete)
     {
-        if (!firstLoad)
+        
+        //if (!firstLoad)
+        if(true)
         {
 
             Debug.Log($"Tracking of {targetName} was lost, setting true!");
@@ -85,16 +87,30 @@ public class ObserverManager : MonoBehaviour
 
             trackingStatus.text = "Tracking was lost, please scan the device around to reestablish tracking";
 
+
+            // if for some reason we are interupting an existing countdown with a new one, we want to reset the currently running one first
+            if (countingDown)
+            {
+                ResetCoroutine();
+                ToggleUIElements(false);
+            } 
             countingDown = true;
             countdown = StartCoroutine(DisableAfterTimer(onComplete));
+                
 
             //if (mObserverBehaviour.Status == TargetStatus. )
         }
         else
         {
             firstLoad = false;
-            Disable(onComplete);
+            //Disable(onComplete);
         }
+    }
+
+    // if we are changing scene then we call this method to stop any countdowns
+    public void OnSceneChange()
+    {
+        ResetCoroutine();
     }
 
     // Coroutine that disables the UI elements after a given amount of time
@@ -115,6 +131,8 @@ public class ObserverManager : MonoBehaviour
 
     private void Disable(Action onComplete)
     {
+        //Debug.Log("Disabling after scene switchy");
+
         ToggleUIElements(false);
 
         //SetAugmentationRendering(false); // set the child components to false if the tracking is lost
