@@ -115,3 +115,6 @@ InitTestScene*.unity*
 *.ply
 *.fbx
 *.blend
+
+# Ignore Video files as they can balloon in size 
+*.mp4
