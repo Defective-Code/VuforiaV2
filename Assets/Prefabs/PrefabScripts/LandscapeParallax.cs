@@ -9,6 +9,8 @@ public class LandscapeParallax : MonoBehaviour
     GameObject cameraAnchor;
     GameObject landscapeCamera;
 
+    public float horizontal_multiplier = 10f;
+
     Pose original;
 
     void Awake()
@@ -32,9 +34,9 @@ public class LandscapeParallax : MonoBehaviour
         // =======================
         // OFFSET CONFIG (meters)
         // =======================
-        float behindOffset = 0.8f;   // how far behind the pose
-        float upOffset = 0.4f;       // how far above the pose
-        float x_rotationOffset = 90; // how far to rotate the 
+        //float behindOffset = 0.8f;   // how far behind the pose
+        //float upOffset = 0.4f;       // how far above the pose
+        //float x_rotationOffset = 90; // how far to rotate the 
 
 
         // Calculate offset position
@@ -57,9 +59,9 @@ public class LandscapeParallax : MonoBehaviour
 
         float horizontal_offset = mainCamera.transform.position.x - transform.position.x;
         //float vertical_offset = mainCamera.transform.position.y - transform.position.y;
-        float vertical_offset = 0;
+        float vertical_offset = 0; //temp setting to 0 so we only have a horizontal parallax effect
 
-        landscapeCamera.transform.localPosition = new Vector3(original.position.x, original.position.y + 10*vertical_offset, original.position.z  + 10 * horizontal_offset); // the camera's "horizontal" ,movement is on the z axis, look at the TestLandscape prefab to see this
+        landscapeCamera.transform.localPosition = new Vector3(original.position.x, original.position.y + 10*vertical_offset, original.position.z  + horizontal_multiplier * horizontal_offset); // the camera's "horizontal" ,movement is on the z axis, look at the TestLandscape prefab to see this
    
 
     }

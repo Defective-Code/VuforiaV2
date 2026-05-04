@@ -2602,7 +2602,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1186589890
 Transform:
   m_ObjectHideFlags: 0
@@ -2780,13 +2780,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1233261804}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.0343736, y: 0.7062709, z: 0.7062709, w: -0.0343736}
-  m_LocalPosition: {x: 0.039000016, y: -0.473, z: 1.198}
+  m_LocalRotation: {x: -0.02961919, y: 0.70648617, z: 0.7060235, w: -0.039126452}
+  m_LocalPosition: {x: 0.059, y: -0.471, z: 1.198}
   m_LocalScale: {x: 1.3055243, y: 1.8004812, z: 1.3889}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 75156911}
-  m_LocalEulerAnglesHint: {x: -95.573, y: 90, z: 90}
+  m_LocalEulerAnglesHint: {x: -95.573, y: 90, z: 90.771}
 --- !u!64 &1233261806
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3151,6 +3151,10 @@ PrefabInstance:
     - target: {fileID: 2111356360650964849, guid: d8e5741ad5f887648bb902969ac01392, type: 3}
       propertyPath: m_Name
       value: LandscapeParallaxPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 8159823757435476115, guid: d8e5741ad5f887648bb902969ac01392, type: 3}
+      propertyPath: horizontal_multiplier
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 8184704137038299054, guid: d8e5741ad5f887648bb902969ac01392, type: 3}
       propertyPath: m_LocalScale.x

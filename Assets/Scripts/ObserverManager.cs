@@ -26,7 +26,7 @@ public class ObserverManager : MonoBehaviour
 
     //public ObserverManager om;
 
-    private bool firstLoad = true;
+    //private bool firstLoad = true;
 
     //public event Action OnTimerFinished;
 
@@ -44,7 +44,7 @@ public class ObserverManager : MonoBehaviour
             instance = this;
         }
 
-        //DontDestroyOnLoad(this);
+        //DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
@@ -67,6 +67,7 @@ public class ObserverManager : MonoBehaviour
             Debug.Log($"Target has changed to {targetName}");
             Disable(onComplete);
         }
+        // if neither case triggers than that means this is the first target we are scanning, in which case we disable all the countdown elements as a sanity check
         else
         {
             Disable(onComplete);
@@ -100,11 +101,11 @@ public class ObserverManager : MonoBehaviour
 
             //if (mObserverBehaviour.Status == TargetStatus. )
         }
-        else
-        {
-            firstLoad = false;
-            //Disable(onComplete);
-        }
+        //else
+        //{
+        //    firstLoad = false;
+        //    //Disable(onComplete);
+        //}
     }
 
     // if we are changing scene then we call this method to stop any countdowns
@@ -129,6 +130,7 @@ public class ObserverManager : MonoBehaviour
         
     }
 
+    // onComplete is a function we want to trigger afterward, usually it is a reference to the disable function within the EventHandler classes to disable the child prefabs
     private void Disable(Action onComplete)
     {
         //Debug.Log("Disabling after scene switchy");

@@ -12,7 +12,7 @@ public class TargetTrackingManager : MonoBehaviour
     void Start()
     {
         // Find all Vuforia Trackables in the scene
-        var observers = FindObjectsOfType<ObserverBehaviour>();
+        var observers = FindObjectsByType<ObserverBehaviour>(FindObjectsSortMode.None);
         foreach (var observer in observers)
         {
             targetStatus[observer.TargetName] = false; // Initially not tracked
