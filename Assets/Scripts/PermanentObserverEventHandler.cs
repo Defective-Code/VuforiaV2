@@ -17,6 +17,8 @@ public class PermanentObserverEventHandler : DefaultObserverEventHandler
 
     protected override void OnTrackingFound()
     {
+        
+
         base.OnTrackingFound();
 
         onTargetFound.Invoke(transform);

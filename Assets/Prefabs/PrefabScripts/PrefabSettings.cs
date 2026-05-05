@@ -11,6 +11,8 @@ public class PrefabSettings : MonoBehaviour
 
     public bool delay = false; // use this to delay the spawning of the associated prefab. This is so tracking can settle and become a bit better before spawning in the prefab
 
+    public bool persistent; // toggle if the prefab spawns in a persistent manner
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void OnEnable()
     {
@@ -42,6 +44,16 @@ public class PrefabSettings : MonoBehaviour
     //    }
     //}
 
+    public void UpdatePosition(Transform imageTarget)
+    {
+        Debug.Log($"Prefab Position : {transform.position} | Rotation : {transform.rotation}"); // print the detected image targets transform
+
+        transform.position = imageTarget.position;
+        transform.rotation = imageTarget.rotation;
+
+        //gameObject.SetActive(true);
+    }
+
 
     public void ApplySettings()
     {
@@ -50,7 +62,7 @@ public class PrefabSettings : MonoBehaviour
         GameObject child = transform.GetChild(0).gameObject;
         child.SetActive(true);
 
-        Debug.Log($"On enable {child.transform.position}");
+        Debug.Log($"On enable {child.transform.localPosition}");
 
         //Debug.Log("After SetActive: " + child.activeSelf);
 
@@ -133,7 +145,8 @@ public class PrefabSettings : MonoBehaviour
         }
 
         GameObject child = transform.GetChild(0).gameObject;
-        Debug.Log($" After transparent {child.transform.position}");
+        Debug.Log($" After transparent {child.transform.localPosition}");
+        //Debug.Log($" After Transparent : parent {transform.localPosition}");
 
 
         //Color objectColor = transform.GetChild(0).GetComponent<Renderer>().material.color;

@@ -24,11 +24,8 @@ public class ObserverManager : MonoBehaviour
     public Slider trackingBar;
     public TMP_Text trackingStatus; // text label to inform user if tracking has been lost
 
-    //public ObserverManager om;
-
-    //private bool firstLoad = true;
-
-    //public event Action OnTimerFinished;
+    private GameObject ModelTargets;
+    private GameObject ImageTargets;
 
     public bool isSceneChanging = false; // check for if the scene is changing between outside and inside
 
@@ -44,6 +41,8 @@ public class ObserverManager : MonoBehaviour
             instance = this;
         }
 
+        ImageTargets = GameObject.Find("ImageTargets");
+        ModelTargets = GameObject.Find("ModelTargets");
         //DontDestroyOnLoad(gameObject);
     }
 
@@ -53,8 +52,23 @@ public class ObserverManager : MonoBehaviour
         //trackingStatus = trackingPanel.transform.GetChild(1).gameObject.GetComponent<TMP_Text>();
     }
 
-    public void Found(string targetName, Action onComplete)
+    //public void Found(string targetName, Action onComplete)
+    public void Found(GameObject target, Action onComplete)
     {
+
+        string targetName = target.name;
+
+        // here given a target, I want to disable the other set of targets due to positioning issues caused by multple types of targets used together
+        GameObject parent = target.transform.parent.gameObject;
+        if (parent.name == ImageTargets.name)
+        {
+            Debug.Log("Disabling Model Targets");
+            ModelTargets.SetActive(false);
+        } else
+        {
+            Debug.Log("Disabling Image Targets");
+            ImageTargets.SetActive(false);
+        }
 
         // if this observer is currently counting down and the stored target is the target of the observer that sent the message, then we have restablished tracking of the same target and we stop the timer
         if (countingDown && currentTargetName == targetName)
@@ -73,13 +87,22 @@ public class ObserverManager : MonoBehaviour
             Disable(onComplete);
         }
         currentTargetName = targetName;
+
+        //ImageTargets.SetActive(true);
+        //ModelTargets.SetActive(true);
     }
 
-    public void Lost(string targetName, Action onComplete)
+    public void Lost(GameObject target, Action onComplete)
     {
-        
+
+        Debug.Log("Enabling Targets");
+        ImageTargets.SetActive(true);
+        ModelTargets.SetActive(true);
+
+        string targetName = target.name;
         //if (!firstLoad)
-        if(true)
+        // if we lost tracking of the currently observed target and not due to acquiring tracking of a new target, then we want to start the timer
+        if (currentTargetName == targetName) 
         {
 
             Debug.Log($"Tracking of {targetName} was lost, setting true!");
@@ -100,7 +123,14 @@ public class ObserverManager : MonoBehaviour
                 
 
             //if (mObserverBehaviour.Status == TargetStatus. )
+        } 
+        // otherwise we want to immediately disable the "lost" target without a timer as we found a new target to track
+        else {
+            Debug.Log($"Tracking of {targetName} was lost and we found {currentTargetName}, setting true!");
+
+            Disable(onComplete);
         }
+
         //else
         //{
         //    firstLoad = false;

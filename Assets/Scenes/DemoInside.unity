@@ -339,6 +339,15 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onTargetFound:
+    m_PersistentCalls:
+      m_Calls: []
+  whileTargetTracked:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetLost:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &75156916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1389,6 +1398,39 @@ MonoBehaviour:
   OnTargetLost:
     m_PersistentCalls:
       m_Calls: []
+  onTargetFound:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2120296154}
+        m_TargetAssemblyTypeName: PersistentPlaceOnTarget, Assembly-CSharp
+        m_MethodName: UpdatePosition
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  whileTargetTracked:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2120296154}
+        m_TargetAssemblyTypeName: PersistentPlaceOnTarget, Assembly-CSharp
+        m_MethodName: UpdatePosition
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onTargetLost:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &558207107
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1600,6 +1642,15 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   OnTargetLost:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetFound:
+    m_PersistentCalls:
+      m_Calls: []
+  whileTargetTracked:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetLost:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &626409098
@@ -1831,6 +1882,39 @@ MonoBehaviour:
   OnTargetLost:
     m_PersistentCalls:
       m_Calls: []
+  onTargetFound:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1321574885}
+        m_TargetAssemblyTypeName: PersistentPlaceOnTarget, Assembly-CSharp
+        m_MethodName: UpdatePosition
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  whileTargetTracked:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1321574885}
+        m_TargetAssemblyTypeName: PersistentPlaceOnTarget, Assembly-CSharp
+        m_MethodName: UpdatePosition
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onTargetLost:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &656476578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1921,6 +2005,11 @@ MonoBehaviour:
   mCastedBehaviour: {fileID: 656476579}
   mMeshFilter: {fileID: 0}
   mMeshRenderer: {fileID: 0}
+--- !u!1 &694969305 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2111356360650964849, guid: d8e5741ad5f887648bb902969ac01392, type: 3}
+  m_PrefabInstance: {fileID: 1321574882}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &733883908
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2137,7 +2226,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7364520568477371693, guid: c8ac6274a2c63aa4b8fe001df6cd7cb7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1924066844}
   m_SourcePrefab: {fileID: 100100000, guid: c8ac6274a2c63aa4b8fe001df6cd7cb7, type: 3}
 --- !u!4 &749455905 stripped
 Transform:
@@ -2149,7 +2241,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -3025066592661613091, guid: c8ac6274a2c63aa4b8fe001df6cd7cb7, type: 3}
   m_PrefabInstance: {fileID: 749455904}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1924066843}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d813439348d134742a1e96caa7216e78, type: 3}
@@ -2304,6 +2396,15 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnTargetLost:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetFound:
+    m_PersistentCalls:
+      m_Calls: []
+  whileTargetTracked:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetLost:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &874081643
@@ -2561,6 +2662,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9095349847088198204, guid: b0f6260e799516e4e8316228961d1f66, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1757591406}
+    - targetCorrespondingSourceObject: {fileID: 9095349847088198204, guid: b0f6260e799516e4e8316228961d1f66, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1757591407}
   m_SourcePrefab: {fileID: 100100000, guid: b0f6260e799516e4e8316228961d1f66, type: 3}
 --- !u!4 &1117736326 stripped
 Transform:
@@ -2734,6 +2838,15 @@ MonoBehaviour:
   OnTargetLost:
     m_PersistentCalls:
       m_Calls: []
+  onTargetFound:
+    m_PersistentCalls:
+      m_Calls: []
+  whileTargetTracked:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetLost:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1186589895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2893,14 +3006,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1239999908}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.2811, y: 0, z: 0.2674}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 749455905}
   m_Father: {fileID: 1576058058}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1239999910
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2955,6 +3068,27 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   OnTargetLost:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetFound:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1924066844}
+        m_TargetAssemblyTypeName: PersistentPlaceOnTarget, Assembly-CSharp
+        m_MethodName: UpdatePosition
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  whileTargetTracked:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetLost:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &1239999912
@@ -3212,6 +3346,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2111356360650964849, guid: d8e5741ad5f887648bb902969ac01392, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1321574885}
     - targetCorrespondingSourceObject: {fileID: 3672335058477766690, guid: d8e5741ad5f887648bb902969ac01392, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
@@ -3226,12 +3363,24 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8109070770930780775, guid: d8e5741ad5f887648bb902969ac01392, type: 3}
   m_PrefabInstance: {fileID: 1321574882}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 694969305}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d813439348d134742a1e96caa7216e78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PrefabSettings
+--- !u!114 &1321574885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 694969305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 319013e0491c07e439182e554b217ad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersistentPlaceOnTarget
 --- !u!1001 &1341945820
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4789,7 +4938,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8628327359299527310, guid: 703c2d020721d84418302a732c0f9725, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2120296154}
   m_SourcePrefab: {fileID: 100100000, guid: 703c2d020721d84418302a732c0f9725, type: 3}
 --- !u!4 &1350628899 stripped
 Transform:
@@ -4863,7 +5015,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7364520568477371693, guid: c8ac6274a2c63aa4b8fe001df6cd7cb7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1702793010}
   m_SourcePrefab: {fileID: 100100000, guid: c8ac6274a2c63aa4b8fe001df6cd7cb7, type: 3}
 --- !u!4 &1438135950 stripped
 Transform:
@@ -4875,7 +5030,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -3025066592661613091, guid: c8ac6274a2c63aa4b8fe001df6cd7cb7, type: 3}
   m_PrefabInstance: {fileID: 1438135949}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1702793009}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d813439348d134742a1e96caa7216e78, type: 3}
@@ -5597,6 +5752,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1688062793}
   m_CullTransparentMesh: 1
+--- !u!1 &1702793009 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7364520568477371693, guid: c8ac6274a2c63aa4b8fe001df6cd7cb7, type: 3}
+  m_PrefabInstance: {fileID: 1438135949}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1702793010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702793009}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 319013e0491c07e439182e554b217ad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersistentPlaceOnTarget
 --- !u!1 &1724550975
 GameObject:
   m_ObjectHideFlags: 0
@@ -5766,6 +5938,15 @@ MonoBehaviour:
   OnTargetLost:
     m_PersistentCalls:
       m_Calls: []
+  onTargetFound:
+    m_PersistentCalls:
+      m_Calls: []
+  whileTargetTracked:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetLost:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1724550981
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5801,6 +5982,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoundController
   player: {fileID: 1180186144}
+--- !u!114 &1757591407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1757591405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 319013e0491c07e439182e554b217ad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersistentPlaceOnTarget
 --- !u!1 &1809458490
 GameObject:
   m_ObjectHideFlags: 0
@@ -5971,6 +6164,23 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1924066843 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7364520568477371693, guid: c8ac6274a2c63aa4b8fe001df6cd7cb7, type: 3}
+  m_PrefabInstance: {fileID: 749455904}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1924066844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1924066843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 319013e0491c07e439182e554b217ad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersistentPlaceOnTarget
 --- !u!1001 &1978417784
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6390,6 +6600,39 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onTargetFound:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1757591407}
+        m_TargetAssemblyTypeName: PersistentPlaceOnTarget, Assembly-CSharp
+        m_MethodName: UpdatePosition
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  whileTargetTracked:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1757591407}
+        m_TargetAssemblyTypeName: PersistentPlaceOnTarget, Assembly-CSharp
+        m_MethodName: UpdatePosition
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onTargetLost:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &2005299810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6584,6 +6827,39 @@ MonoBehaviour:
   OnTargetLost:
     m_PersistentCalls:
       m_Calls: []
+  onTargetFound:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1702793010}
+        m_TargetAssemblyTypeName: PersistentPlaceOnTarget, Assembly-CSharp
+        m_MethodName: UpdatePosition
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 2057378697}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  whileTargetTracked:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1702793010}
+        m_TargetAssemblyTypeName: PersistentPlaceOnTarget, Assembly-CSharp
+        m_MethodName: UpdatePosition
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 2057378697}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onTargetLost:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &2057378702
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6668,6 +6944,23 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ac3b41ddc6aca16408273f3f4a28565f, type: 3}
+--- !u!1 &2120296152 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8628327359299527310, guid: 703c2d020721d84418302a732c0f9725, type: 3}
+  m_PrefabInstance: {fileID: 1350628898}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2120296154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120296152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 319013e0491c07e439182e554b217ad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersistentPlaceOnTarget
 --- !u!1 &2142098541
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,6 +14,11 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+// We need a custom UnityEvent for passing on the 
+// ImageTargets transform reference
+//[Serializable]
+//public class TransformEvent : UnityEvent<Transform> { }
+
 /// <summary>
 /// A custom handler that implements the ITrackableEventHandler interface.
 ///
@@ -23,108 +28,63 @@ using UnityEngine.SceneManagement;
 public class OwheoObserverEventHandler : DefaultObserverEventHandler
 {
 
-    //public float disableTimer = 10f;
+    public TransformEvent onTargetFound;
+    public TransformEvent whileTargetTracked;
+    public TransformEvent onTargetLost;
 
-    //bool countingDown = false; // tracks whether we are currently counting down the tracking
-    //Coroutine countdown;
+    //public GameObject toSpawn; // the prefab to spawn on the target
 
-    //private float timerCount = 0f;
-
-    //public GameObject trackingPanel;
-    //Slider trackingBar;
-    //TMP_Text trackingStatus; // text label to inform user if tracking has been lost
-
-    //public ObserverManager om;
-
-    //private bool firstLoad = true; // variable to check if this is the first time the targets are loaded, because Vuforia falsely "tracks" them on initialization, meaning the tracking lost code executes. 
-
-    //private bool isSceneChanging = false; // boolean to check the state of scene switching, resets to false everytime a scene is loaded, then is set to true once the scene is switched
-
-    // Checks to see if the scene is being changed so none of the observer logic attempts to fire after switching the scene
-    //void OnEnable()
-    //{
-    //    SceneManager.activeSceneChanged += OnSceneChanged;
-    //}
-
-    //void OnDisable()
-    //{
-    //    SceneManager.activeSceneChanged -= OnSceneChanged;
-    //}
-
-    //void OnSceneChanged(Scene oldScene, Scene newScene)
-    //{
-    //    if (firstLoad) return; // here im checking if this is the first time the scene is being loaded, as such we 
-    //    isSceneChanging = true;
-    //}
-
-    //void Start()
-    //{
-    //    trackingBar = trackingPanel.transform.GetChild(0);
-    //    trackingStatus = trackingPanel.transform.GetChild(1);
-    //}
+    Coroutine whileTracked = null;
 
     protected override void OnTrackingFound()
     {
+        //Debug.Log($"Target Position : {transform.position} | Rotation : {transform.rotation}"); // print the detected image targets transform
 
-        //if (countingDown && ObserverManager.instance.currentTargetName == mObserverBehaviour.TargetName)
-        //{
-        //    ResetCoroutine();// stop a currently running countdown if we reestablish tracking
-        //} 
-        //else if(ObserverManager.instance.currentTargetName != mObserverBehaviour.TargetName)
-        //{
-        //    Debug.Log($"Target has changed to {mObserverBehaviour.TargetName}");
-        //    DisableNotAfterTimer();
-        //}
 
-        //ToggleUIElements(false);
-
-        ObserverManager.instance.Found(mObserverBehaviour.TargetName, () =>
+        ObserverManager.instance.Found(this.transform.gameObject, () =>
         {
             if (mObserverBehaviour) SetComponentsEnabled(true); // set the child components to false if the tracking is lost for more than whatever disableTimer is
             OnTargetFound?.Invoke();
+
+            //base.OnTrackingFound(); // call the base class's OnTrackingFound method
+
+            onTargetFound.Invoke(transform);
+
+            if(whileTracked != null) StopCoroutine(whileTracked);
+            whileTracked = StartCoroutine(WhileTracked());
         });
 
-        //SetAugmentationRendering(true);
-        //OnTargetFound?.Invoke();
     }
 
     // When tracking is lost depends on what you have set the status filter as in the Editor.  TRACKING, TRACKING_EXTENDED Tracked etc
     protected override void OnTrackingLost()
     {
-
-        //Debug.Log($"isSceneChanging : {isSceneChanging}");
-        //if (isSceneChanging) return; // check if the scene is being changed and stop the execution of any of this
-
-        //if (!firstLoad)
-        //{
-
-        //    Debug.Log("Tracking was lost, setting true!");
-
-        //    ToggleUIElements(true);
-
-        //    trackingStatus.text = "Tracking was lost, please scan the device around to reestablish tracking";
-
-        //    countingDown = true;
-        //    countdown = StartCoroutine(DisableAfterTimer());
-
-        //    //if (mObserverBehaviour.Status == TargetStatus. )
-        //}
-        //else
-        //{
-        //    firstLoad = false;
-        //    DisableNotAfterTimer();
-        //}
-
-        ObserverManager.instance.Lost(mObserverBehaviour.TargetName, () =>
+        ObserverManager.instance.Lost(this.transform.gameObject, () =>
         {
             if (mObserverBehaviour) SetComponentsEnabled(false); // set the child components to false if the tracking is lost for more than whatever disableTimer is
             OnTargetLost?.Invoke();
+
+            //base.OnTrackingLost();
+
+            onTargetLost.Invoke(transform);
+            if(whileTracked != null) StopCoroutine(whileTracked); // 
         });
 
 
     }
 
-
+    // For more information about Coroutines see
+    // https://docs.unity3d.com/Manual/Coroutines.html
+    private IEnumerator WhileTracked()
+    {
+        // looks dangerous but is ok inside a Coroutine 
+        // as long as you yield somewhere
+        while (true)
+        {
+            whileTargetTracked.Invoke(transform);
+            yield return null;
+        }
+    }
 
     public void SetComponentsEnabled(bool enable)
     {
@@ -148,55 +108,4 @@ public class OwheoObserverEventHandler : DefaultObserverEventHandler
             }
         }
     }
-
-    //IEnumerator DisableAfterTimer()
-    //{
-    //    while (timerCount < disableTimer)
-    //    {
-    //        timerCount += Time.deltaTime;
-    //        //trackingStatus.text = $"Tracking was lost, please scan the device around to reestablish tracking : {disableTimer - timerCount}";
-    //        countdownBar.value = Mathf.Clamp01((disableTimer - timerCount) * (1f / disableTimer));
-    //        yield return null;
-    //    }
-
-    //    Debug.Log("Timer Complete, Setting False!");
-    //    ToggleUIElements(false);
-
-    //    //timerCount = 0f;
-
-    //    if (mObserverBehaviour)
-    //        SetComponentsEnabled(false); // set the child components to false if the tracking is lost for more than whatever disableTimer is
-    //    OnTargetLost?.Invoke();
-
-    //    ResetCoroutine(); // once the timer has completed we want to reset everything
-    //}
-
-    //void DisableNotAfterTimer()
-    //{
-    //    ToggleUIElements(false);
-
-    //    if (mObserverBehaviour)
-    //        SetComponentsEnabled(false); // set the child components to false if the tracking is lost for more than whatever disableTimer is
-    //    OnTargetLost?.Invoke();
-
-    //    ResetCoroutine();
-    //}
-
-    //// reset all the coroutine stuff
-    //void ResetCoroutine()
-    //{
-    //    if (countingDown) StopCoroutine(countdown);
-    //    countingDown = false;
-    //    countdown = null;
-    //    timerCount = 0f;
-    //}
-
-    //void ToggleUIElements(bool toggle)
-    //{
-    //    trackingStatus.gameObject.SetActive(toggle);
-    //    countdownPanel.SetActive(toggle);
-    //}
-
-
-
 }
