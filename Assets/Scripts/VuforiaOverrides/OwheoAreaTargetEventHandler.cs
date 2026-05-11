@@ -53,8 +53,6 @@ public class OwheoAreaTargetEventHandler : DefaultAreaTargetEventHandler
     // When tracking is lost depends on what you have set the status filter as in the Editor.  TRACKING, TRACKING_EXTENDED Tracked etc
     protected override void OnTrackingLost()
     {
-
-
         ObserverManager.instance.Lost(this.transform.gameObject, () =>
         {
             SetAugmentationRendering(false); // set the child components to false if the tracking is lost

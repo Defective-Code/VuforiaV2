@@ -20,7 +20,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Demo.unity
     guid: a59fdabda311d85418e77f38013ac366
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/PermanentPrefabScene.unity
     guid: e7308e82c7f4bef4391f8756ded2de9d
   - enabled: 1

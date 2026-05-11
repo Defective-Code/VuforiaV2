@@ -24,8 +24,11 @@ public class ObserverManager : MonoBehaviour
     public Slider trackingBar;
     public TMP_Text trackingStatus; // text label to inform user if tracking has been lost
 
+    private bool targetChangeLock;
     private GameObject ModelTargets;
     private GameObject ImageTargets;
+    private GameObject AreaTargets;
+
 
     public bool isSceneChanging = false; // check for if the scene is changing between outside and inside
 
@@ -43,6 +46,7 @@ public class ObserverManager : MonoBehaviour
 
         ImageTargets = GameObject.Find("ImageTargets");
         ModelTargets = GameObject.Find("ModelTargets");
+        AreaTargets = GameObject.Find("AreaTargets");
         //DontDestroyOnLoad(gameObject);
     }
 
@@ -60,14 +64,23 @@ public class ObserverManager : MonoBehaviour
 
         // here given a target, I want to disable the other set of targets due to positioning issues caused by multple types of targets used together
         GameObject parent = target.transform.parent.gameObject;
-        if (parent.name == ImageTargets.name)
+        if (ImageTargets != null && parent.name == ImageTargets.name)
         {
-            Debug.Log("Disabling Model Targets");
-            ModelTargets.SetActive(false);
-        } else
+            Debug.Log("Disabling Model and AreaTargets");
+            if (ModelTargets != null) ModelTargets.SetActive(false);
+            if (AreaTargets != null) AreaTargets.SetActive(true);
+        } 
+        else if (ModelTargets != null && parent.name == ModelTargets.name)
         {
-            Debug.Log("Disabling Image Targets");
-            ImageTargets.SetActive(false);
+            Debug.Log("Disabling Image and Area Targets");
+            if (ImageTargets != null) ImageTargets.SetActive(false);
+            if (AreaTargets != null) AreaTargets.SetActive(true);
+        }
+        else if (AreaTargets != null && parent.name == AreaTargets.name)
+        {
+            Debug.Log("Disabling Image and Model Targets");
+            if (ImageTargets != null) ImageTargets.SetActive(false);
+            if (ModelTargets != null) ModelTargets.SetActive(false);
         }
 
         // if this observer is currently counting down and the stored target is the target of the observer that sent the message, then we have restablished tracking of the same target and we stop the timer
@@ -96,8 +109,9 @@ public class ObserverManager : MonoBehaviour
     {
 
         Debug.Log("Enabling Targets");
-        ImageTargets.SetActive(true);
-        ModelTargets.SetActive(true);
+        if (ImageTargets!= null) ImageTargets.SetActive(true);
+        if (ModelTargets != null) ModelTargets.SetActive(true);
+        if (AreaTargets != null) AreaTargets.SetActive(true);
 
         string targetName = target.name;
         //if (!firstLoad)
@@ -107,17 +121,17 @@ public class ObserverManager : MonoBehaviour
 
             Debug.Log($"Tracking of {targetName} was lost, setting true!");
 
-            ToggleUIElements(true);
-
-            trackingStatus.text = "Tracking was lost, please scan the device around to reestablish tracking";
-
-
             // if for some reason we are interupting an existing countdown with a new one, we want to reset the currently running one first
             if (countingDown)
             {
                 ResetCoroutine();
                 ToggleUIElements(false);
-            } 
+            }
+
+            ToggleUIElements(true);
+
+            trackingStatus.text = "Tracking was lost, please scan the device around to reestablish tracking";
+
             countingDown = true;
             countdown = StartCoroutine(DisableAfterTimer(onComplete));
                 
