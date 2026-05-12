@@ -19,7 +19,7 @@ public class PersistentPlaceOnTarget : MonoBehaviour
 
     public void UpdatePosition(Transform imageTarget)
     {
-        Debug.Log($"Prefab Position : {transform.position} | Rotation : {transform.rotation}"); // print the detected image targets transform
+        //Debug.Log($"Prefab Position : {transform.position} | Rotation : {transform.rotation}"); // print the detected image targets transform
 
         transform.position = imageTarget.position;
         transform.rotation = imageTarget.rotation;
