@@ -4,17 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Vuforia;
 
-// Struct to hold the positional data for a detected AprilTag
-public struct AprilTagInfo
-{
-    public int id;
-    public Vector3 position;
-    public Quaternion rotation;
-    public float tagSize;
-}
-
 /// <summary>
-/// Class to setup AprilTagDetection to operate alongside Vuforia.  
+/// Class to setup AprilTagDetection to operate alongside Vuforia. Focuseed entirely on detecting and storing the pose of AprilTags. Access the public tags list to access them and do anything further
 /// </summary>
 public class AprilTagDetector2 : MonoBehaviour
 {
@@ -47,11 +38,11 @@ public class AprilTagDetector2 : MonoBehaviour
     private UnityEngine.UI.RawImage debugImage;
     private Texture2D debugTex; // debug texture that stores the re-converted Span of pixels used to detect for AprilTags
 
-    [SerializeField]
-    SerializableDictionary tagObjects;
-
     // List of detected tags for use in other areas
-    public List<AprilTagInfo> tags = new List<AprilTagInfo>();
+    //public List<AprilTagInfo> tags = new List<AprilTagInfo>();
+    public Queue<AprilTagInfo> tags = new Queue<AprilTagInfo>();
+
+    //SerializableDictionary tagObjects;
 
     void Start()
     {
@@ -125,7 +116,7 @@ public class AprilTagDetector2 : MonoBehaviour
             // make sure that the camera image isn't null since it can take a few frames for the image to become available after registering for an image format.
             if (cameraDevice.GetCameraImage(PIXEL_FORMAT) != null)
             {
-                //Debug.Log("GetCameraImage was NOT NULL");
+                
 
                 latestImage = cameraDevice.GetCameraImage(PIXEL_FORMAT);
 
@@ -246,10 +237,12 @@ public class AprilTagDetector2 : MonoBehaviour
             //debugObject.transform.position = detectedTag.Position;
             //debugObject.transform.rotation = detectedTag.Rotation;
 
-            tags.Add(new AprilTagInfo { id=detectedTag.ID, position=worldPosition, rotation=worldRotation, tagSize=tagSize });
+            //tags.Add(new AprilTagInfo { id=detectedTag.ID, position=worldPosition, rotation=worldRotation, tagSize=tagSize }); // save the Unity world position of the detected tags in the list
+            tags.Enqueue(new AprilTagInfo { id = detectedTag.ID, position = worldPosition, rotation = worldRotation, tagSize = tagSize });
+
+            //EnablePrefab(detectedTag.ID, worldPosition, worldRotation);
 
             //EnablePrefab(detectedTag.ID, detectedTag.Position, detectedTag.Rotation);
-            EnablePrefab(detectedTag.ID, worldPosition, worldRotation);
             //DrawZVector(detectedTag.Position, detectedTag.Rotation);
         }
     }
@@ -441,56 +434,56 @@ public class AprilTagDetector2 : MonoBehaviour
     /// <param name="id"></param>
     /// <param name="position"></param>
     /// <param name="rotation"></param>
-    private void EnablePrefab(int id, Vector3 position, Quaternion rotation)
-    {
-        Debug.Log($"Tag position {position}");
-        Debug.Log($"Tag rotation {rotation}");
-        //Debug.Log($"Camera position {Camera.main.transform.position}");
+    //private void EnablePrefab(int id, Vector3 position, Quaternion rotation)
+    //{
+    //    Debug.Log($"Tag position {position}");
+    //    Debug.Log($"Tag rotation {rotation}");
+    //    //Debug.Log($"Camera position {Camera.main.transform.position}");
 
 
-        // Converting the coordinates relative to the camera into worldspace position and rotation
-        Transform cameraTransform = Camera.main.transform;
+    //    // Converting the coordinates relative to the camera into worldspace position and rotation
+    //    Transform cameraTransform = Camera.main.transform;
 
-        // if a given AprilTag id has an associated prefab and it exists then activate it
-        if (tagObjects.Contains(id))
-        {
-            GameObject prefab = tagObjects.Get(id);
+    //    // if a given AprilTag id has an associated prefab and it exists then activate it
+    //    if (tagObjects.Contains(id))
+    //    {
+    //        GameObject prefab = tagObjects.Get(id);
 
-            if (prefab != null)
-            {
-                prefab.SetActive(true);
+    //        if (prefab != null)
+    //        {
+    //            prefab.SetActive(true);
 
-                prefab.transform.position = position;
-                prefab.transform.rotation = rotation;
-                prefab.transform.localScale = new Vector3(5, 5, 5);
+    //            prefab.transform.position = position;
+    //            prefab.transform.rotation = rotation;
+    //            prefab.transform.localScale = new Vector3(5, 5, 5);
 
-                prefab.transform.Rotate(new Vector3(45,0,-90), Space.Self);// rotate the object to face "forwards"
-            }
-        }
-    }
+    //            prefab.transform.Rotate(new Vector3(45, 0, -90), Space.Self);// rotate the object to face "forwards"
+    //        }
+    //    }
+    //}
 
-    private void DisablePrefab(int id, Vector3 position, Quaternion rotation)
-    {
-        if (tagObjects.Contains(id))
-        {
-            if (tagObjects.Get(id) != null)
-            {
-                tagObjects.Get(id).SetActive(false);
-            }
-        }
-    }
+    //private void DisablePrefab(int id, Vector3 position, Quaternion rotation)
+    //{
+    //    if (tagObjects.Contains(id))
+    //    {
+    //        if (tagObjects.Get(id) != null)
+    //        {
+    //            tagObjects.Get(id).SetActive(false);
+    //        }
+    //    }
+    //}
 
-    private void ResetToDisabled()
-    {
-        foreach(int id in tagObjects.GetKeys())
-        {
-            GameObject child = tagObjects.Get(id);
-            child.SetActive(false);
+    //private void ResetToDisabled()
+    //{
+    //    foreach (int id in tagObjects.GetKeys())
+    //    {
+    //        GameObject child = tagObjects.Get(id);
+    //        child.SetActive(false);
 
-            child.transform.position = new Vector3(0,0,0);
-            child.transform.rotation = new Quaternion(0,0,0,0);
-        }
+    //        child.transform.position = new Vector3(0, 0, 0);
+    //        child.transform.rotation = new Quaternion(0, 0, 0, 0);
+    //    }
 
-        
-    }
+
+    //}
 }

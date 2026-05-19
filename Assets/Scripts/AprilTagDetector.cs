@@ -340,47 +340,47 @@ public class AprilTagDetector : MonoBehaviour
     //    RenderTexture.active = null;
     //}
 
-    private void EnablePrefab(int id, Vector3 position, Quaternion rotation)
-    {
+    //private void EnablePrefab(int id, Vector3 position, Quaternion rotation)
+    //{
 
-        // if a given AprilTag id has an associated prefab and it exists then activate it
-        if (tagObjects.Contains(id))
-        {
-            GameObject child = tagObjects.Get(id);
+    //    // if a given AprilTag id has an associated prefab and it exists then activate it
+    //    if (tagObjects.Contains(id))
+    //    {
+    //        GameObject child = tagObjects.Get(id);
 
-            if (child != null)
-            {
-                child.SetActive(true);
+    //        if (child != null)
+    //        {
+    //            child.SetActive(true);
                 
-                child.transform.position = position;
-                //child.transform.rotation = rotation;
-                child.transform.localScale = new Vector3(1, 1, 1);
-            }
-        }
-    }
+    //            child.transform.position = position;
+    //            //child.transform.rotation = rotation;
+    //            child.transform.localScale = new Vector3(1, 1, 1);
+    //        }
+    //    }
+    //}
 
-    private void DisablePrefab(int id, Vector3 position, Quaternion rotation)
-    {
-        if (tagObjects.Contains(id))
-        {
-            if (tagObjects.Get(id) != null)
-            {
-                tagObjects.Get(id).SetActive(false);
-            }
-        }
-    }
+    //private void DisablePrefab(int id, Vector3 position, Quaternion rotation)
+    //{
+    //    if (tagObjects.Contains(id))
+    //    {
+    //        if (tagObjects.Get(id) != null)
+    //        {
+    //            tagObjects.Get(id).SetActive(false);
+    //        }
+    //    }
+    //}
 
-    private void ResetToDisabled()
-    {
-        foreach(int id in tagObjects.GetKeys())
-        {
-            GameObject child = tagObjects.Get(id);
-            child.SetActive(false);
+    //private void ResetToDisabled()
+    //{
+    //    foreach(int id in tagObjects.GetKeys())
+    //    {
+    //        GameObject child = tagObjects.Get(id);
+    //        child.SetActive(false);
 
-            child.transform.position = new Vector3(0,0,0);
-            child.transform.rotation = new Quaternion(0,0,0,0);
-        }
+    //        child.transform.position = new Vector3(0,0,0);
+    //        child.transform.rotation = new Quaternion(0,0,0,0);
+    //    }
 
         
-    }
+    //}
 }
