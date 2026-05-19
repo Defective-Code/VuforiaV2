@@ -27,7 +27,9 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class OwheoObserverEventHandler : DefaultObserverEventHandler
 {
-
+    /// <summary>
+    /// These three events represent transforms to apply to a prefab on the specified event happening such as the target being found, tracked or lost.
+    /// </summary>
     public TransformEvent onTargetFound;
     public TransformEvent whileTargetTracked;
     public TransformEvent onTargetLost;
@@ -43,7 +45,7 @@ public class OwheoObserverEventHandler : DefaultObserverEventHandler
 
         ObserverManager.instance.Found(this.transform.gameObject, () =>
         {
-            if (mObserverBehaviour) SetComponentsEnabled(true); // set the child components to false if the tracking is lost for more than whatever disableTimer is
+            if (mObserverBehaviour) SetComponentsEnabled(true); 
             OnTargetFound?.Invoke();
 
             //base.OnTrackingFound(); // call the base class's OnTrackingFound method
@@ -73,6 +75,11 @@ public class OwheoObserverEventHandler : DefaultObserverEventHandler
 
     }
 
+    /// <summary>
+    /// This Function runs while the Target is being tracked and constantly runs the method specified in the editor under the WhileTargetTracked in the ObserverHandler
+    /// Only relevant for "persistent" prefabs, as in when I want to spawn a prefab on a target and then leave it there. 
+    /// </summary>
+    /// <returns></returns>
     // For more information about Coroutines see
     // https://docs.unity3d.com/Manual/Coroutines.html
     private IEnumerator WhileTracked()

@@ -1,49 +1,62 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Vuforia;
+
+// Struct to hold the positional data for a detected AprilTag
+public struct AprilTagInfo
+{
+    public int id;
+    public Vector3 position;
+    public Quaternion rotation;
+    public float tagSize;
+}
 
 /// <summary>
 /// Class to setup AprilTagDetection to operate alongside Vuforia.  
 /// </summary>
 public class AprilTagDetector2 : MonoBehaviour
 {
+
     const PixelFormat PIXEL_FORMAT = PixelFormat.RGB888;
     const TextureFormat TEXTURE_FORMAT = TextureFormat.RGB24;
 
     //Test fields for the Z line
     GameObject debugObject = null;
-    //[SerializeField]
-    //Camera arCamera;
 
     private bool isTablet = true;
 
-    AprilTag.TagDetector detector;
+    private AprilTag.TagDetector detector;
 
-    private Texture2D debugTex;
+    private bool vuforiaReady = false; // bool to check if Vuforia has been initialized
 
-    private Texture2D cameraTexture;
-    private Vuforia.Image image;
-    private bool vuforiaReady = false;
+    /// <summary>
+    /// Fields for managing the detection object provided by the package AprilTag by Keijiro. Modify these values in the editor for this class
+    /// </summary>
+    [SerializeField]
+    float tagSize = 0.055f; // the physical size of the tag in meters. the default here is 0.055m, or 55mm. 
+    [SerializeField]
+    int decimation = 4; // or downsampling. This value controls the resolution used to detect the AprilTags, and is the scale factor we scale the image feed down by. Higher values will run faster, but struggle to detect small or far away tags. Smaller ones run slower but have a better detection rate
 
+    private Vuforia.Image latestImage; // field to store the latest image from the camera;
     private Color32[] colorBuffer; // the array of pixel values that represents the image
-    private bool detected;
+    private Color32[] rotatedBuffer = new Color32[1]; // pre-allocated buffer for the rotated version of the color buffer
 
     [SerializeField]
     private UnityEngine.UI.RawImage debugImage;
-
-    Camera mainCamera;
-    CameraDevice cameraDevice;
-
-    float tagSize = 0.1f;
+    private Texture2D debugTex; // debug texture that stores the re-converted Span of pixels used to detect for AprilTags
 
     [SerializeField]
     SerializableDictionary tagObjects;
 
+    // List of detected tags for use in other areas
+    public List<AprilTagInfo> tags = new List<AprilTagInfo>();
+
     void Start()
     {
 
-        mainCamera = Camera.main;
+        var mainCamera = Camera.main;
 
         if (mainCamera == null)
         {
@@ -61,6 +74,8 @@ public class AprilTagDetector2 : MonoBehaviour
     {
         if (detector != null)
             detector.Dispose();
+        if (debugTex != null)
+            Destroy(debugTex); // add this
     }
 
     void OnVuforiaStarted()
@@ -76,9 +91,9 @@ public class AprilTagDetector2 : MonoBehaviour
     {
         yield return null; // wait a frame
 
-        debugTex = new Texture2D(1, 1, TEXTURE_FORMAT, false);
+        //debugTex = new Texture2D(1, 1, TEXTURE_FORMAT, false);
 
-        cameraDevice = VuforiaBehaviour.Instance.CameraDevice;
+        CameraDevice cameraDevice = VuforiaBehaviour.Instance.CameraDevice;
 
         //PixelFormat pixelFormat = PixelFormat.RGB888;
         bool success = VuforiaBehaviour.Instance.CameraDevice.SetFrameFormat(PIXEL_FORMAT, true);
@@ -105,33 +120,27 @@ public class AprilTagDetector2 : MonoBehaviour
         if (vuforiaReady)
         {
 
-            //test for on first detection don't bother moving 
-            if (detected)
-            {
-                return;
-            }
+            var cameraDevice = VuforiaBehaviour.Instance.CameraDevice;
 
             // make sure that the camera image isn't null since it can take a few frames for the image to become available after registering for an image format.
             if (cameraDevice.GetCameraImage(PIXEL_FORMAT) != null)
             {
                 //Debug.Log("GetCameraImage was NOT NULL");
 
-                var latestImage = cameraDevice.GetCameraImage(PIXEL_FORMAT);
+                latestImage = cameraDevice.GetCameraImage(PIXEL_FORMAT);
 
                 int width = latestImage.Width;
                 int height = latestImage.Height;
-
-                
 
                 if (detector == null)
                 {
                     switch (isTablet)
                     {
                         case false:
-                            detector = new AprilTag.TagDetector(width, height, 4); // default orientation, as in the intially captured image is either the right way up, or is 180 degrees upside down. 
+                            detector = new AprilTag.TagDetector(width, height, decimation); // default orientation, as in the intially captured image is either the right way up, or is 180 degrees upside down. 
                             break;
                         case true:
-                            detector = new AprilTag.TagDetector(height, width, 4); // swap the height and width if a roation is applied for different devices, as in if the initial captured camera image is the wrong orientation and needs to be rotated 90degrees some way, then we need to swap the height and length values to match this
+                            detector = new AprilTag.TagDetector(height, width, decimation); // swap the height and width if a roation is applied for different devices, as in if the initial captured camera image is the wrong orientation and needs to be rotated 90degrees some way, then we need to swap the height and length values to match this
                             break;
                     }
 
@@ -141,7 +150,12 @@ public class AprilTagDetector2 : MonoBehaviour
                 ProcessRGB(latestImage); // convert the Vuforia image to a Color32 span
                 NormalizeBuffer(width, height, isTablet);
 
-                ReadOnlySpan<Color32> imageSpan = new ReadOnlySpan<Color32>(colorBuffer);
+
+                //ReadOnlySpan<Color32> imageSpan = new ReadOnlySpan<Color32>(colorBuffer);
+                // Conditionally set imageSpan to either rotatedBuffer or colorBuffer depending on if we have rotated the image
+                ReadOnlySpan<Color32> imageSpan = isTablet
+                    ? new ReadOnlySpan<Color32>(rotatedBuffer)
+                    : new ReadOnlySpan<Color32>(colorBuffer);
 
                 //bool rotated = false; // indicate if the the texture has been rotated. Only important for testing purposes so the output texture displays properly
                 TestSpan(imageSpan, latestImage, isTablet); // debug the colorBuffer by converting it back to a texture and outputting to a UI element. Rotated should be true if the image has been rotated
@@ -204,33 +218,35 @@ public class AprilTagDetector2 : MonoBehaviour
 
         Vector2 fov = cameraDevice.GetCameraFieldOfViewRads(); // Vector2 of both horizontal and vertical FOV
 
-        //Debug.Log($"{fov} is NULL");
-
+        // Use fov.x i.e the "horizontal" fov because when we use the tablet, the output is technically 1920x1080, but we rotate it by 90degrees so that its 1080x1920
+        // however when we want the now vertical FOV, we must use the "horizontal" fov as it now corresponds to the vertical FOV
         detector.ProcessImage(span, fov.x, tagSize);
 
         foreach (var detectedTag in detector.DetectedTags)
         {
             Debug.Log("Detected!");
 
-            if (debugObject == null)
-            {
-                debugObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                debugObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-            }
+            //if (debugObject == null)
+            //{
+            //    debugObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            //    debugObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            //}
 
-            Debug.Log($"Keijiro pos: {detectedTag.Position}");
-            Debug.Log($"Keijiro rot: {detectedTag.Rotation.eulerAngles}");
+            //Debug.Log($"Keijiro pos: {detectedTag.Position}");
+            //Debug.Log($"Keijiro rot: {detectedTag.Rotation.eulerAngles}");
 
             Vector3 worldPosition = Camera.main.transform.TransformPoint(detectedTag.Position);
             Quaternion worldRotation = Camera.main.transform.rotation * detectedTag.Rotation;
-            Debug.Log($"World pos: {worldPosition}");
+            //Debug.Log($"World pos: {worldPosition}");
 
-            Debug.Log($"Device FOV H: {fov.x * Mathf.Rad2Deg}, V: {fov.y * Mathf.Rad2Deg}");
+            //Debug.Log($"Device FOV H: {fov.x * Mathf.Rad2Deg}, V: {fov.y * Mathf.Rad2Deg}");
 
-            Debug.Log($"Z at 10cm: {detectedTag.Position.z}");
+            //Debug.Log($"Z at 10cm: {detectedTag.Position.z}");
             //Debug.Log($"Square pos: {debugObject.transform.position}");
-            debugObject.transform.position = detectedTag.Position;
+            //debugObject.transform.position = detectedTag.Position;
             //debugObject.transform.rotation = detectedTag.Rotation;
+
+            tags.Add(new AprilTagInfo { id=detectedTag.ID, position=worldPosition, rotation=worldRotation, tagSize=tagSize });
 
             //EnablePrefab(detectedTag.ID, detectedTag.Position, detectedTag.Rotation);
             EnablePrefab(detectedTag.ID, worldPosition, worldRotation);
@@ -246,27 +262,18 @@ public class AprilTagDetector2 : MonoBehaviour
     /// <param name="rotated"></param>
     void TestSpan(ReadOnlySpan<Color32> span, Vuforia.Image image, bool rotated)
     {
-        int width = image.Width;
-        int height = image.Height;
+        int width = rotated ? image.Height : image.Width;
+        int height = rotated ? image.Width : image.Height;
 
-        if (rotated)
+        if (debugTex == null || debugTex.width != width || debugTex.height != height)
         {
-            width = image.Height;
-            height = image.Width;
-        } 
+            if (debugTex != null)
+                Destroy(debugTex); // release the old GPU texture first
 
-
-            Color32[] temp = span.ToArray();
-        //Debug.Log(temp.Length);
-
-        if (debugTex == null ||
-            debugTex.width != width ||
-            debugTex.height != height)
-        {
             debugTex = new Texture2D(width, height, TextureFormat.RGBA32, false);
         }
 
-        debugTex.SetPixels32(temp);
+        debugTex.SetPixels32(span.ToArray());
         debugTex.Apply();
         debugImage.texture = debugTex;
     }
@@ -285,7 +292,8 @@ public class AprilTagDetector2 : MonoBehaviour
         if (tablet)
         {
             FlipHorizontal(colorBuffer, width, height);
-            colorBuffer = Rotate90(colorBuffer, width, height, true); // false for anticlockwise and true for clockwise
+            Rotate90(colorBuffer, width, height, true); // false for anticlockwise and true for clockwise, this returns the rotated image in the rotatedBuffer field
+            //colorBuffer = new Color32[](rotatedBuffer); //Rotate90 updates the rotateBuffer, so we need to set this equal to colorBuffer.
         }
         else
         {
@@ -343,16 +351,21 @@ public class AprilTagDetector2 : MonoBehaviour
     }
 
     /// <summary>
-    /// Method to rotate an array of pixels 90degrees either clockwise or anti-clockwise. 
+    /// Method that takes an input Array of pixels, and updates a buffer that represents the same array but rotated 90degrees. This is stored in rotateBuffer.
     /// </summary>
     /// <param name="pixels"></param>
     /// <param name="width"></param>
     /// <param name="height"></param>
     /// <param name="clockwise"></param>
     /// <returns></returns>
-    Color32[] Rotate90(Color32[] pixels, int width, int height, bool clockwise)
+    void Rotate90(Color32[] pixels, int width, int height, bool clockwise)
     {
-        Color32[] output = new Color32[pixels.Length];
+        // if the image size has changed and doesn't match the pre-allocated memory for the rotated ColorBuffer, then we want to update it to the correct size
+        if (rotatedBuffer.Length !=  pixels.Length)
+        {
+            rotatedBuffer = new Color32[pixels.Length];
+        }
+
         for(int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -360,17 +373,15 @@ public class AprilTagDetector2 : MonoBehaviour
                 Color32 pixel = pixels[y * width + x]; // y * width gives us a "row", while x gives us the index into that "row". So this inner loop loops over columns, while the outer one loops over rows.
                 if (clockwise) // clockwise
                 {
-                    output[(height - 1 - y) + x * height] = pixel; //the part in brackets decrements through the "row" i.e it represents the x value in the rotated 2d array, while the x*height decrements through "columns" and represents the y value
+                    rotatedBuffer[(height - 1 - y) + x * height] = pixel; //the part in brackets decrements through the "row" i.e it represents the x value in the rotated 2d array, while the x*height decrements through "columns" and represents the y value
                 }
                 else // anticlockwise
                 {
-                    output[(width - 1 - x) * height + y] = pixel; // Counter-clockwise rotation
+                    rotatedBuffer[(width - 1 - x) * height + y] = pixel; // Counter-clockwise rotation
                 }
                 
             }
         }
-
-        return output;
 
     }
 
@@ -433,7 +444,8 @@ public class AprilTagDetector2 : MonoBehaviour
     private void EnablePrefab(int id, Vector3 position, Quaternion rotation)
     {
         Debug.Log($"Tag position {position}");
-        Debug.Log($"Camera position {Camera.main.transform.position}");
+        Debug.Log($"Tag rotation {rotation}");
+        //Debug.Log($"Camera position {Camera.main.transform.position}");
 
 
         // Converting the coordinates relative to the camera into worldspace position and rotation
@@ -450,7 +462,9 @@ public class AprilTagDetector2 : MonoBehaviour
 
                 prefab.transform.position = position;
                 prefab.transform.rotation = rotation;
-                prefab.transform.localScale = new Vector3(1, 1, 1);
+                prefab.transform.localScale = new Vector3(5, 5, 5);
+
+                prefab.transform.Rotate(new Vector3(45,0,-90), Space.Self);// rotate the object to face "forwards"
             }
         }
     }
