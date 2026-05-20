@@ -7,6 +7,9 @@ public class AprilTagObjects : MonoBehaviour
     [SerializeField]
     SerializableDictionary tagObjects;
 
+    [SerializeField]
+    float smoothSpeed = 1f;
+
     //[SerializeField]
     AprilTagDetector2 aprilTagDetector;
 
@@ -61,15 +64,18 @@ public class AprilTagObjects : MonoBehaviour
 
             if (target != null && prefab != null)
             {
+                // double checking they are enabled as they are disabled by default
+                target.SetActive(true);
+                prefab.SetActive(true);
 
                 // saving the position and rotation of the prefab set in the editor
                 Vector3 prefabLocalPosition = prefab.transform.localPosition;
                 Quaternion prefabLocalRotation = prefab.transform.localRotation;
 
-                //prefab.SetActive(true);
-
                 target.transform.position = position;
                 target.transform.rotation = rotation;
+                //target.transform.position = Vector3.Lerp(target.transform.position, position, Time.deltaTime * smoothSpeed);
+                //target.transform.rotation = Quaternion.Slerp(target.transform.rotation, rotation, Time.deltaTime * smoothSpeed);
                 //prefab.transform.localScale = new Vector3(5, 5, 5);
 
                 Debug.Log(target.transform.position);

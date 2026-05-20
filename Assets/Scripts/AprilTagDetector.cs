@@ -29,7 +29,7 @@ public class AprilTagDetector : MonoBehaviour
     SerializableDictionary tagObjects;
 
     TagDrawer _drawer;
-    [SerializeField] Material _tagMaterial = null;
+    //[SerializeField] Material _tagMaterial = null;
 
     void Start()
     {

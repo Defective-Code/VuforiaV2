@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Vuforia;
 
 /// <summary>
@@ -16,6 +17,7 @@ public class AprilTagDetector2 : MonoBehaviour
     //Test fields for the Z line
     GameObject debugObject = null;
 
+    private bool detectionRunning = false;
     private bool isTablet = true;
 
     private AprilTag.TagDetector detector;
@@ -38,8 +40,7 @@ public class AprilTagDetector2 : MonoBehaviour
     private UnityEngine.UI.RawImage debugImage;
     private Texture2D debugTex; // debug texture that stores the re-converted Span of pixels used to detect for AprilTags
 
-    // List of detected tags for use in other areas
-    //public List<AprilTagInfo> tags = new List<AprilTagInfo>();
+    // Queue of detected tags for use in other areas
     public Queue<AprilTagInfo> tags = new Queue<AprilTagInfo>();
 
     //SerializableDictionary tagObjects;
@@ -107,103 +108,81 @@ public class AprilTagDetector2 : MonoBehaviour
 
     void Update()
     {
+
         // check to make sure Vuforia is initialized first
-        if (vuforiaReady)
+        if (!vuforiaReady)
         {
+            Debug.LogError("Vuforia was not ready yet");
+            return;
+        }
 
-            var cameraDevice = VuforiaBehaviour.Instance.CameraDevice;
+        if (detectionRunning) return; // if we already have a detection going then no need to do another
 
-            // make sure that the camera image isn't null since it can take a few frames for the image to become available after registering for an image format.
-            if (cameraDevice.GetCameraImage(PIXEL_FORMAT) != null)
+
+        var cameraDevice = VuforiaBehaviour.Instance.CameraDevice;
+        latestImage = cameraDevice.GetCameraImage(PIXEL_FORMAT);
+
+        // make sure that the camera image isn't null since it can take a few frames for the image to become available after registering for an image format.
+        if (latestImage == null) 
+        {
+            Debug.Log("GetCameraImage was NULL");
+            return;
+        }
+
+        if (detector == null)
+        {
+            switch (isTablet)
             {
-                
-
-                latestImage = cameraDevice.GetCameraImage(PIXEL_FORMAT);
-
-                int width = latestImage.Width;
-                int height = latestImage.Height;
-
-                if (detector == null)
-                {
-                    switch (isTablet)
-                    {
-                        case false:
-                            detector = new AprilTag.TagDetector(width, height, decimation); // default orientation, as in the intially captured image is either the right way up, or is 180 degrees upside down. 
-                            break;
-                        case true:
-                            detector = new AprilTag.TagDetector(height, width, decimation); // swap the height and width if a roation is applied for different devices, as in if the initial captured camera image is the wrong orientation and needs to be rotated 90degrees some way, then we need to swap the height and length values to match this
-                            break;
-                    }
-
-                    //detector = new AprilTag.TagDetector(width, height, 4); // default orientation, as in the intially captured image is either the right way up, or is 180 degrees upside down. 
-                }
-
-                ProcessRGB(latestImage); // convert the Vuforia image to a Color32 span
-                NormalizeBuffer(width, height, isTablet);
-
-
-                //ReadOnlySpan<Color32> imageSpan = new ReadOnlySpan<Color32>(colorBuffer);
-                // Conditionally set imageSpan to either rotatedBuffer or colorBuffer depending on if we have rotated the image
-                ReadOnlySpan<Color32> imageSpan = isTablet
-                    ? new ReadOnlySpan<Color32>(rotatedBuffer)
-                    : new ReadOnlySpan<Color32>(colorBuffer);
-
-                //bool rotated = false; // indicate if the the texture has been rotated. Only important for testing purposes so the output texture displays properly
-                TestSpan(imageSpan, latestImage, isTablet); // debug the colorBuffer by converting it back to a texture and outputting to a UI element. Rotated should be true if the image has been rotated
-
-                ProcessImage(imageSpan); // process the converted Vuforia image
-
-            } 
-            else
-            {
-                Debug.Log("GetCameraImage was NULL");
+                case false:
+                    detector = new AprilTag.TagDetector(latestImage.Width, latestImage.Height, decimation); // default orientation, as in the intially captured image is either the right way up, or is 180 degrees upside down. 
+                    break;
+                case true:
+                    detector = new AprilTag.TagDetector(latestImage.Height, latestImage.Width, decimation); // swap the height and width if a roation is applied for different devices, as in if the initial captured camera image is the wrong orientation and needs to be rotated 90degrees some way, then we need to swap the height and length values to match this
+                    break;
             }
         }
-        
+
+        //StartCoroutine(ProcessImage(latestImage));
+
+        // asynchronous method for detecting AprilTags
+        Task.Run(() =>
+        {
+            ProcessImage(latestImage);
+            detectionRunning = false;
+        });
+
     }
 
     /// <summary>
-    /// Method to convert a Vuforia Image taken from the ARCamera into an array of Pixels
+    /// Coroutine to take a Vuforia image and perform post-processing to convert it into a form for detection, then detect AprilTags using it. 
     /// </summary>
     /// <param name="image"></param>
-    void ProcessRGB(Vuforia.Image image)
+    void ProcessImage(Vuforia.Image image)
     {
-        int width = image.Width;
-        int height = image.Height;
-        int pixelCount = width * height;
+        int width = latestImage.Width;
+        int height = latestImage.Height;
 
-        var pixels = image.Pixels;
+        ProcessRGB(image); // convert the Vuforia image to a Color32 span
+        detectionRunning = true; // as we have now stored the image in the color buffer, we want to make sure we have made the detection is running
+        NormalizeBuffer(width, height, isTablet);
 
-        if (colorBuffer == null || colorBuffer.Length != pixelCount)
-            colorBuffer = new Color32[pixelCount];
+        //ReadOnlySpan<Color32> imageSpan = new ReadOnlySpan<Color32>(colorBuffer);
+        // Conditionally set imageSpan to either rotatedBuffer or colorBuffer depending on if we have rotated the image
+        ReadOnlySpan<Color32> imageSpan = isTablet
+            ? new ReadOnlySpan<Color32>(rotatedBuffer)
+            : new ReadOnlySpan<Color32>(colorBuffer);
 
-        for (int i = 0, j = 0; i < pixelCount; i++, j += 3)
-        {
-            colorBuffer[i] = new Color32(
-                pixels[j],
-                pixels[j + 1],
-                pixels[j + 2],
-                255
-            );
-        }
+        //bool rotated = false; // indicate if the the texture has been rotated. Only important for testing purposes so the output texture displays properly
+        //TestSpan(imageSpan, latestImage, isTablet); // debug the colorBuffer by converting it back to a texture and outputting to a UI element. Rotated should be true if the image has been rotated
 
-        //Debug.Log($"Device Image size: {image.Width}x{image.Height}");
-
-        //Debug.Log($"Span length: {colorBuffer.Length}");
-        //Debug.Log($"Expected: {image.Width * image.Height}");
-        // Convert the array of Color32 to a readonly array
-        //imageBuffer = new ReadOnlySpan<Color32> (colorBuffer);
-        //return new ReadOnlySpan<Color32>(colorBuffer);
-        //return colorBuffer;
-
-        //ProcessImage(new ReadOnlySpan<Color32>(colorBuffer), image);
+        DetectImage(imageSpan); // process the converted Vuforia image
     }
 
     /// <summary>
-    /// Method to process an Image taken from the camera in the form of a span of pixels, and then pass it to the detector to see if there are any AprilTags in the image.
+    /// Method to detect an Image taken from the camera in the form of a span of pixels, and then pass it to the detector to see if there are any AprilTags in the image.
     /// </summary>
     /// <param name="span"></param>
-    void ProcessImage(ReadOnlySpan<Color32> span)
+    void DetectImage(ReadOnlySpan<Color32> span)
     {
         var cameraDevice = VuforiaBehaviour.Instance.CameraDevice;
 
@@ -248,27 +227,40 @@ public class AprilTagDetector2 : MonoBehaviour
     }
 
     /// <summary>
-    /// Method to display a given span of pixels, convert it back into a texture and display it on a UI element for visualization and testing purposes
+    /// Method to convert a Vuforia Image taken from the ARCamera into an array of Pixels
     /// </summary>
-    /// <param name="span"></param>
     /// <param name="image"></param>
-    /// <param name="rotated"></param>
-    void TestSpan(ReadOnlySpan<Color32> span, Vuforia.Image image, bool rotated)
+    void ProcessRGB(Vuforia.Image image)
     {
-        int width = rotated ? image.Height : image.Width;
-        int height = rotated ? image.Width : image.Height;
+        int width = image.Width;
+        int height = image.Height;
+        int pixelCount = width * height;
 
-        if (debugTex == null || debugTex.width != width || debugTex.height != height)
+        var pixels = image.Pixels;
+
+        if (colorBuffer == null || colorBuffer.Length != pixelCount)
+            colorBuffer = new Color32[pixelCount];
+
+        for (int i = 0, j = 0; i < pixelCount; i++, j += 3)
         {
-            if (debugTex != null)
-                Destroy(debugTex); // release the old GPU texture first
-
-            debugTex = new Texture2D(width, height, TextureFormat.RGBA32, false);
+            colorBuffer[i] = new Color32(
+                pixels[j],
+                pixels[j + 1],
+                pixels[j + 2],
+                255
+            );
         }
 
-        debugTex.SetPixels32(span.ToArray());
-        debugTex.Apply();
-        debugImage.texture = debugTex;
+        //Debug.Log($"Device Image size: {image.Width}x{image.Height}");
+
+        //Debug.Log($"Span length: {colorBuffer.Length}");
+        //Debug.Log($"Expected: {image.Width * image.Height}");
+        // Convert the array of Color32 to a readonly array
+        //imageBuffer = new ReadOnlySpan<Color32> (colorBuffer);
+        //return new ReadOnlySpan<Color32>(colorBuffer);
+        //return colorBuffer;
+
+        //ProcessImage(new ReadOnlySpan<Color32>(colorBuffer), image);
     }
 
     /// <summary>
@@ -376,6 +368,31 @@ public class AprilTagDetector2 : MonoBehaviour
             }
         }
 
+    }
+
+
+    /// <summary>
+    /// Method to display a given span of pixels, convert it back into a texture and display it on a UI element for visualization and testing purposes
+    /// </summary>
+    /// <param name="span"></param>
+    /// <param name="image"></param>
+    /// <param name="rotated"></param>
+    void TestSpan(ReadOnlySpan<Color32> span, Vuforia.Image image, bool rotated)
+    {
+        int width = rotated ? image.Height : image.Width;
+        int height = rotated ? image.Width : image.Height;
+
+        if (debugTex == null || debugTex.width != width || debugTex.height != height)
+        {
+            if (debugTex != null)
+                Destroy(debugTex); // release the old GPU texture first
+
+            debugTex = new Texture2D(width, height, TextureFormat.RGBA32, false);
+        }
+
+        debugTex.SetPixels32(span.ToArray());
+        debugTex.Apply();
+        debugImage.texture = debugTex;
     }
 
 
